@@ -1,5 +1,5 @@
-#ifndef FILTERS_UKF_EXAMPLE_WRAP_MEASUREMENT_HPP
-#define FILTERS_UKF_EXAMPLE_WRAP_MEASUREMENT_HPP
+#ifndef _FILTERS_UKF_EXAMPLE_WRAP_MEASUREMENT_HPP
+#define _FILTERS_UKF_EXAMPLE_WRAP_MEASUREMENT_HPP
 
 #include "filters_ukf_core/core.hpp"
 #include "filters_ukf_example/parameters.hpp"
@@ -36,4 +36,4 @@ private:
 
 } // namespace filters_ukf_example
 
-#endif // FILTERS_UKF_EXAMPLE_WRAP_MEASUREMENT_HPP
+#endif // _FILTERS_UKF_EXAMPLE_WRAP_MEASUREMENT_HPP

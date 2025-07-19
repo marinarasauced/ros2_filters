@@ -1,5 +1,5 @@
-#ifndef FILTERS_UKF_EXAMPLE_PARAMETERS_HPP
-#define FILTERS_UKF_EXAMPLE_PARAMETERS_HPP
+#ifndef _FILTERS_UKF_EXAMPLE_PARAMETERS_HPP
+#define _FILTERS_UKF_EXAMPLE_PARAMETERS_HPP
 
 namespace filters_ukf_example
 {
@@ -42,4 +42,4 @@ struct BlueROV2Parameters
 
 } // namespace filters_ukf_example
 
-#endif // FILTERS_UKF_EXAMPLE_PARAMETERS_HPP
+#endif // _FILTERS_UKF_EXAMPLE_PARAMETERS_HPP

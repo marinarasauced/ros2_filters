@@ -1,5 +1,5 @@
-#ifndef FILTERS_UKF_EXAMPLE_WRAP_MODEL_HPP
-#define FILTERS_UKF_EXAMPLE_WRAP_MODEL_HPP
+#ifndef _FILTERS_UKF_EXAMPLE_WRAP_MODEL_HPP
+#define _FILTERS_UKF_EXAMPLE_WRAP_MODEL_HPP
 
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/fluid_pressure.hpp>
@@ -47,4 +47,4 @@ private:
 
 } // namespace filters_ukf_example
 
-#endif // FILTERS_UKF_EXAMPLE_WRAP_MODEL_HPP
+#endif // _FILTERS_UKF_EXAMPLE_WRAP_MODEL_HPP
