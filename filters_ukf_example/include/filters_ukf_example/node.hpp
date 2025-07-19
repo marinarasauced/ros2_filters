@@ -1,0 +1,50 @@
+#ifndef FILTERS_UKF_EXAMPLE_WRAP_MODEL_HPP
+#define FILTERS_UKF_EXAMPLE_WRAP_MODEL_HPP
+
+#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/fluid_pressure.hpp>
+
+#include "filters_msgs/msg/filters_state.hpp"
+#include "filters_msgs/msg/filters_innov.hpp"
+#include "filters_ukf_core/core.hpp"
+#include "filters_ukf_example/parameters.hpp"
+#include "filters_ukf_example/wrap_measurement.hpp"
+#include "filters_ukf_example/wrap_process.hpp"
+
+
+namespace filters_ukf_example
+{
+
+class UKFNode : public rclcpp::Node
+{
+public:
+    static constexpr int N_X = 2;
+    static constexpr int N_U = 0;
+    static constexpr int N_W = 1;
+
+    using UKF = filters_ukf_core::UKFCore<N_X, N_U, N_W>;
+    using VectorX = typename UKF::VectorX;
+    using MatrixX = typename UKF::MatrixX;
+    using VectorW = typename UKF::VectorW;
+    using MatrixW = typename UKF::MatrixW;
+
+    UKFNode();
+
+private:
+    BlueROV2Parameters params_;
+
+    std::shared_ptr<UKF> ukf_;
+    std::shared_ptr<H2<N_X>> h2_;
+
+    rclcpp::Publisher<filters_msgs::msg::FiltersState>::SharedPtr _publisher_x;
+    rclcpp::Publisher<filters_msgs::msg::FiltersInnov>::SharedPtr _publisher_y;
+
+    rclcpp::Subscription<sensor_msgs::msg::FluidPressure>::SharedPtr _subscription_z2;
+    void _handle_subscription_z2(const sensor_msgs::msg::FluidPressure::SharedPtr msg);
+
+    rclcpp::Time tic;
+};
+
+} // namespace filters_ukf_example
+
+#endif // FILTERS_UKF_EXAMPLE_WRAP_MODEL_HPP
