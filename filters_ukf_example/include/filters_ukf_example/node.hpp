@@ -5,7 +5,7 @@
 #include <sensor_msgs/msg/fluid_pressure.hpp>
 
 #include "filters_msgs/msg/filters_state.hpp"
-#include "filters_msgs/msg/filters_innov.hpp"
+#include "filters_msgs/msg/filters_innovation.hpp"
 #include "filters_ukf_core/core.hpp"
 #include "filters_ukf_example/parameters.hpp"
 #include "filters_ukf_example/wrap_measurement.hpp"
@@ -33,11 +33,12 @@ public:
 private:
     BlueROV2Parameters params_;
 
+    std::shared_ptr<F<N_X, N_U, N_W>> f_;
+    std::shared_ptr<H2<N_X, 1>> h2_;
     std::shared_ptr<UKF> ukf_;
-    std::shared_ptr<H2<N_X>> h2_;
 
     rclcpp::Publisher<filters_msgs::msg::FiltersState>::SharedPtr _publisher_x;
-    rclcpp::Publisher<filters_msgs::msg::FiltersInnov>::SharedPtr _publisher_y;
+    rclcpp::Publisher<filters_msgs::msg::FiltersInnovation>::SharedPtr _publisher_y;
 
     rclcpp::Subscription<sensor_msgs::msg::FluidPressure>::SharedPtr _subscription_z2;
     void _handle_subscription_z2(const sensor_msgs::msg::FluidPressure::SharedPtr msg);

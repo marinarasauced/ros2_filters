@@ -5,45 +5,52 @@
 
 namespace filters_ukf_core
 {
+
 template<int N_X, int N_U, int N_W>
 UKFCore<N_X, N_U, N_W>::UKFCore(
-    std::shared_ptr<model_process> model_process,
-    const MatrixX& P,
-    const VectorW& w_mean,
-    const MatrixW& Q
-) : 
-    x_(VectorX::Zero()),
-    P_(P),
-    w_mean_(w_mean),
-    Q_(Q),
-    u_(VectorU::Zero()),
-    model_process_(std::move(model_process))
+    const std::shared_ptr<ModelProcess<N_X, N_U, N_W>>& model_process,
+    const VectorX& x0,
+    const MatrixX& P0,
+    const MatrixW& Q0,
+    double alpha,
+    double beta,
+    double kappa
+) :
+    x_(x0),
+    P_(P0),
+    Q_(Q0),
+    alpha_(alpha),
+    beta_(beta),
+    kappa_(kappa),
+    model_process_(model_process)
 {
-    lambda_ = alpha_ * alpha_ * (N_AUG - N_X) - N_AUG;
+    lambda_ = alpha_ * alpha_ * (N_AUG + kappa_) - N_AUG;
     gamma_ = std::sqrt(N_AUG + lambda_);
-
-    (void) _compute_weights();
+    
+    computeWeights();
 }
 
 
 template<int N_X, int N_U, int N_W>
-typename UKFCore<N_X, N_U, N_W>::VectorX UKFCore<N_X, N_U, N_W>::rk4_step(
+typename UKFCore<N_X, N_U, N_W>::VectorX UKFCore<N_X, N_U, N_W>::computeRK4Step(
     const VectorX& x,
     const VectorU& u,
     const VectorW& w,
+    double t,
     double dt
 ) {
     const auto& f = [this](
         const VectorX& x,
         const VectorU& u,
-        const VectorW& w
+        const VectorW& w,
+        double t
     ) {
-        return this->model_process_->f(x, u, w);
+        return model_process_->f(x, u, w, t);
     };
-    VectorX k1 = f(x, u, w) * dt;
-    VectorX k2 = f(x + 0.5 * k1, u, w) * dt;
-    VectorX k3 = f(x + 0.5 * k2, u, w) * dt;
-    VectorX k4 = f(x + k3, u, w) * dt;
+    VectorX k1 = f(x, u, w, t) * dt;
+    VectorX k2 = f(x + 0.5 * k1, u, w, t) * dt;
+    VectorX k3 = f(x + 0.5 * k2, u, w, t) * dt;
+    VectorX k4 = f(x + k3, u, w, t) * dt;
 
     VectorX xk = x + (k1 + 2.0 * k2 + 2.0 * k3 + k4) / 6.0;
     return xk;
@@ -51,133 +58,111 @@ typename UKFCore<N_X, N_U, N_W>::VectorX UKFCore<N_X, N_U, N_W>::rk4_step(
 
 
 template<int N_X, int N_U, int N_W>
-void UKFCore<N_X, N_U, N_W>::predict(
+void UKFCore<N_X, N_U, N_W>::predictMP(
+    const VectorU& u,
+    double t,
     double dt
 ) {
     std::lock_guard<std::mutex> lock(mutex_);
 
-    using MatrixPredX = Eigen::Matrix<double, N_X, N_SIGMA>;
+    Eigen::Matrix<double, N_AUG, N_SIGMA> x_sigma;
+    computeAugmentedSigmaPoints(x_sigma);
 
-    MatrixSigma sigma_points = _generate_sigma_points(x_, P_);
-    MatrixPredX x_pred;
-
+    Eigen::Matrix<double, N_X, N_SIGMA> x_pred;
     for (int i = 0; i < N_SIGMA; ++i) {
-        VectorX x_i = sigma_points.template block<N_X, 1>(0, i);
-        VectorW w_i = sigma_points.template block<N_W, 1>(N_X, i);
-        x_pred.col(i) = rk4_step(x_i, u_, w_i, dt);
+        VectorX x_i = x_sigma.col(i).template head<N_X>();
+        VectorW w_i = x_sigma.col(i).template tail<N_W>();
+        x_pred.col(i) = computeRK4Step(x_i, u, w_i, t, dt);
     }
 
     x_.setZero();
     for (int i = 0; i < N_SIGMA; ++i) {
-        x_ += weights_mean_[i] * x_pred.col(i);
+        x_ += weights_mean_(i) * x_pred.col(i);
     }
 
     P_.setZero();
     for (int i = 0; i < N_SIGMA; ++i) {
-        VectorX dx = x_pred.col(i) - x_;
-        P_ += weights_cov_[i] * dx * dx.transpose();
+        auto dx = x_pred.col(i) - x_;
+        P_ += weights_cov_(i) * dx * dx.transpose();
     }
 }
 
 
 template<int N_X, int N_U, int N_W>
 template<int N_Z>
-std::shared_ptr<ModelMeasurement<N_X, N_Z>> UKFCore<N_X, N_U, N_W>::add_model_measurement(
-    std::shared_ptr<ModelMeasurement<N_X, N_Z>> model_measurement)
-{
-    std::lock_guard<std::mutex> lock(mutex_);
-
-    auto wrapper = std::make_shared<WrapperMM<N_Z>>(model_measurement);
-    models_measurement_.push_back(wrapper);
-    return model_measurement;
-}
-
-
-template<int N_X, int N_U, int N_W>
-template<int N_Z>
-void UKFCore<N_X, N_U, N_W>::update(
-    const std::shared_ptr<ModelMeasurement<N_X, N_Z>>& model_measurement,
-    const Eigen::Matrix<double, N_Z, 1>& z
+void UKFCore<N_X, N_U, N_W>::addMeasurementModel(
+    std::shared_ptr<ModelMeasurement<N_X, N_Z>> model_measurement
 ) {
     std::lock_guard<std::mutex> lock(mutex_);
 
-    using MatrixPredX = Eigen::Matrix<double, N_X, N_SIGMA>;
-    using MatrixPredZ = Eigen::Matrix<double, N_Z, N_SIGMA>;
+    auto wrapper = std::make_shared<Wrapper<N_Z>>(model_measurement);
+    models_measurement_.push_back(wrapper);
+}
 
-    MatrixSigma sigma_points = _generate_sigma_points(x_, P_);
-    MatrixPredX x_sigma = sigma_points.template topRows<N_X>();
-    MatrixPredZ z_sigma;
 
+template<int N_X, int N_U, int N_W>
+template<int N_Z>
+void UKFCore<N_X, N_U, N_W>::updateMM(
+    std::shared_ptr<ModelMeasurement<N_X, N_Z>> model_measurement,
+    Eigen::Matrix<double, N_Z, 1>& z
+) {
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    Eigen::Matrix<double, N_AUG, N_SIGMA> x_sigma;
+    computeAugmentedSigmaPoints(x_sigma);
+
+    Eigen::Matrix<double, N_Z, N_SIGMA> z_sigma;
     for (int i = 0; i < N_SIGMA; ++i) {
-        z_sigma.col(i) = model_measurement->h(x_sigma.col(i));
+        VectorX x_i = x_sigma.col(i).template head<N_X>();
+        z_sigma.col(i) = model_measurement->h(x_i);
     }
 
     Eigen::Matrix<double, N_Z, 1> z_pred = Eigen::Matrix<double, N_Z, 1>::Zero();
-
     for (int i = 0; i < N_SIGMA; ++i) {
-        z_pred += weights_mean_[i] * z_sigma.col(i);
+        z_pred += weights_mean_(i) * z_sigma.col(i);
     }
 
     Eigen::Matrix<double, N_Z, N_Z> S = Eigen::Matrix<double, N_Z, N_Z>::Zero();
     Eigen::Matrix<double, N_X, N_Z> T = Eigen::Matrix<double, N_X, N_Z>::Zero();
-
     for (int i = 0; i < N_SIGMA; ++i) {
-        auto dz = z_sigma.col(i) - z_pred;
-        auto dx = x_sigma.col(i) - x_;
-
-        S += weights_cov_[i] * dz * dz.transpose();
-        T += weights_cov_[i] * dx * dz.transpose();
+        Eigen::Matrix<double, N_Z, 1> dz = z_sigma.col(i) - z_pred;
+        VectorX dx = x_sigma.col(i).template head<N_X>() - x_;
+        S += weights_cov_(i) * dz * dz.transpose();
+        T += weights_cov_(i) * dx * dz.transpose();
     }
-
     S += model_measurement->R();
-    S_ = S;
 
     Eigen::Matrix<double, N_X, N_Z> K = T * S.inverse();
     Eigen::Matrix<double, N_Z, 1> y = z - z_pred;
-    y_ = y;
-
     x_ += K * y;
     P_ -= K * S * K.transpose();
 }
 
 
 template<int N_X, int N_U, int N_W>
-typename UKFCore<N_X, N_U, N_W>::VectorX UKFCore<N_X, N_U, N_W>::get_x() const {
+typename UKFCore<N_X, N_U, N_W>::VectorX UKFCore<N_X, N_U, N_W>::getX() const {
     std::lock_guard<std::mutex> lock(mutex_);
     return x_;
 }
 
 
 template<int N_X, int N_U, int N_W>
-typename UKFCore<N_X, N_U, N_W>::MatrixX UKFCore<N_X, N_U, N_W>::get_P() const {
+typename UKFCore<N_X, N_U, N_W>::MatrixX UKFCore<N_X, N_U, N_W>::getP() const {
     std::lock_guard<std::mutex> lock(mutex_);
     return P_;
 }
 
 
 template<int N_X, int N_U, int N_W>
-Eigen::VectorXd UKFCore<N_X, N_U, N_W>::get_y() const {
+typename UKFCore<N_X, N_U, N_W>::MatrixW UKFCore<N_X, N_U, N_W>::getQ() const {
     std::lock_guard<std::mutex> lock(mutex_);
-    return y_;
+    return Q_;
 }
 
 
 template<int N_X, int N_U, int N_W>
-Eigen::MatrixXd UKFCore<N_X, N_U, N_W>::get_S() const {
-    std::lock_guard<std::mutex> lock(mutex_);
-    return S_;
-}
-
-
-template<int N_X, int N_U, int N_W>
-void UKFCore<N_X, N_U, N_W>::set_u(const VectorU& u) {
-    std::lock_guard<std::mutex> lock(mutex_);
-    u_ = u;
-}
-
-
-template<int N_X, int N_U, int N_W>
-void UKFCore<N_X, N_U, N_W>::_compute_weights() {
+void UKFCore<N_X, N_U, N_W>::computeWeights(
+) {
     weights_mean_.resize(N_SIGMA);
     weights_cov_.resize(N_SIGMA);
 
@@ -192,29 +177,27 @@ void UKFCore<N_X, N_U, N_W>::_compute_weights() {
 
 
 template<int N_X, int N_U, int N_W>
-Eigen::Matrix<double, N_X + N_W, 2 * (N_X + N_W) + 1> UKFCore<N_X, N_U, N_W>::_generate_sigma_points(
-    const VectorX& x,
-    const MatrixX& P
+void UKFCore<N_X, N_U, N_W>::computeAugmentedSigmaPoints(
+    Eigen::Matrix<double, N_AUG, N_SIGMA>& x_sigma
 ) {
-    Eigen::Matrix<double, N_AUG, N_SIGMA> sigma_points;
+    using VectorA = Eigen::Matrix<double, N_AUG, 1>;
+    using MatrixA = Eigen::Matrix<double, N_AUG, N_AUG>;
 
-    Eigen::Matrix<double, N_AUG, 1> x_aug;
-    x_aug.head(N_X) = x;
-    x_aug.tail(N_W) = w_mean_;
+    VectorA x_aug = VectorA::Zero();
+    MatrixA P_aug = MatrixA::Zero();
 
-    Eigen::Matrix<double, N_AUG, N_AUG> P_aug = Eigen::Matrix<double, N_AUG, N_AUG>::Zero();
-    P_aug.topLeftCorner(N_X, N_X) = P;
-    P_aug.bottomRightCorner(N_W, N_W) = Q_;
+    x_aug.template head<N_X>() = x_;
+    P_aug.template topLeftCorner<N_X, N_X>() = P_;
+    P_aug.template bottomRightCorner<N_W, N_W>() = Q_;
 
-    Eigen::Matrix<double, N_AUG, N_AUG> A = P_aug.llt().matrixL();
+    Eigen::LLT<MatrixA> llt(P_aug);
+    MatrixA L = llt.matrixL();
 
-    sigma_points.col(0) = x_aug;
+    x_sigma.col(0) = x_aug;
     for (int i = 0; i < N_AUG; ++i) {
-        sigma_points.col(i + 1) = x_aug + gamma_ * A.col(i);
-        sigma_points.col(i + 1 + N_AUG) = x_aug - gamma_ * A.col(i);
+        x_sigma.col(i + 1) = x_aug + gamma_ * L.col(i);
+        x_sigma.col(i + 1 + N_AUG) = x_aug - gamma_ * L.col(i);
     }
-
-    return sigma_points;
 }
 
 } // namespace filters_ukf_core

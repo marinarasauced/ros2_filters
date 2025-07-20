@@ -6,9 +6,6 @@
 namespace filters_ukf_core
 {
 
-template<int N_X, int N_U, int N_W>
-class UKFCore; // forward declaration
-
 template<int N_X, int N_Z>
 class ModelMeasurement
 {

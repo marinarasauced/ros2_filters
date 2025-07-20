@@ -14,9 +14,11 @@ public:
     using VectorU = Eigen::Matrix<double, N_U, 1>;
     using VectorW = Eigen::Matrix<double, N_W, 1>;
 
-    VectorX f(const VectorX& x, const VectorU& u, const VectorW& w) const override {
+    VectorX f(const VectorX& x, const VectorU& u, const VectorW& w, double t) const override {
         VectorX dx;
+
         (void) u;
+        (void) t;
 
         dx(0) = x(1);
         dx(1) = -14.0 * abs(x(1)) * x(1) + w(0);

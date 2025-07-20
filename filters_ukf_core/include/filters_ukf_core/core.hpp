@@ -18,86 +18,70 @@ class UKFCore
 {
 public:
     using VectorX = Eigen::Matrix<double, N_X, 1>;
-    using MatrixX = Eigen::Matrix<double, N_X, N_X>;
+    using VectorU = Eigen::Matrix<double, N_U, 1>;
     using VectorW = Eigen::Matrix<double, N_W, 1>;
+    using MatrixX = Eigen::Matrix<double, N_X, N_X>;
     using MatrixW = Eigen::Matrix<double, N_W, N_W>;
 
-    using VectorU = Eigen::Matrix<double, N_U, 1>;
-
-    using model_process = ModelProcess<N_X, N_U, N_W>;
-
     UKFCore(
-        std::shared_ptr<model_process> model_process,
-        const MatrixX& P,
-        const VectorW& w_mean,
-        const Eigen::Matrix<double, N_W, N_W>& Q
+        const std::shared_ptr<ModelProcess<N_X, N_U, N_W>>& model_process,
+        const VectorX& x0,
+        const MatrixX& P0,
+        const MatrixW& Q0,
+        double alpha = 1e-3,
+        double beta = 2.0,
+        double kappa = 0.0
     );
 
-    VectorX rk4_step(const VectorX& x, const VectorU& u, const VectorW& w, double dt);
-    void predict(double dt);
+    VectorX computeRK4Step(const VectorX& x, const VectorU& u, const VectorW& w, double t, double dt);
+    void predictMP(const VectorU& u, double t, double dt);
 
     template<int N_Z>
-    std::shared_ptr<ModelMeasurement<N_X, N_Z>> add_model_measurement(
-        std::shared_ptr<ModelMeasurement<N_X, N_Z>> model_measurement
-    );
+    void addMeasurementModel(std::shared_ptr<ModelMeasurement<N_X, N_Z>> model_measurement);
 
     template<int N_Z>
-    void update(
-        const std::shared_ptr<ModelMeasurement<N_X, N_Z>>& model_measurement,
-        const Eigen::Matrix<double, N_Z, 1>& z
-    );
+    void updateMM(std::shared_ptr<ModelMeasurement<N_X, N_Z>> model_measurement, Eigen::Matrix<double, N_Z, 1>& z);
 
 
-    VectorX get_x() const;
-    MatrixX get_P() const;
-
-    Eigen::VectorXd get_y() const;
-    Eigen::MatrixXd get_S() const;
-
-    void set_u(const VectorU& u);
+    VectorX getX() const;
+    MatrixX getP() const;
+    MatrixW getQ() const;
 
 private:
+    mutable std::mutex mutex_;
+
     static constexpr int N_AUG = N_X + N_W;
     static constexpr int N_SIGMA = 2 * N_AUG + 1;
 
     VectorX x_;
     MatrixX P_;
-    VectorW w_mean_;
     MatrixW Q_;
 
-    VectorU u_;
-
-    static constexpr double alpha_ = 1e-3;
-    static constexpr double beta_ = 2.0;
-    static constexpr double kappa_ = 0.0;
+    double alpha_;
+    double beta_ ;
+    double kappa_;
     double lambda_;
     double gamma_;
 
-    using MatrixSigma = Eigen::Matrix<double, N_AUG, N_SIGMA>;
+    std::shared_ptr<ModelProcess<N_X, N_U, N_W>> model_process_;
 
-    std::shared_ptr<model_process> model_process_;
+    Eigen::VectorXd weights_mean_;
+    Eigen::VectorXd weights_cov_;
 
-    std::vector<double> weights_mean_;
-    std::vector<double> weights_cov_;
-
-    mutable std::mutex mutex_;
-
-    struct InterfaceWrapperMM {
-        virtual ~InterfaceWrapperMM() = default;
+    struct WrapperInterface {
+        virtual ~WrapperInterface() = default;
     };
 
     template<int N_Z>
-    struct WrapperMM : InterfaceWrapperMM {
+    struct Wrapper : WrapperInterface {
         std::shared_ptr<ModelMeasurement<N_X, N_Z>> model_measurement;
-        WrapperMM(std::shared_ptr<ModelMeasurement<N_X, N_Z>> m) : model_measurement(m) {}
+        Wrapper(std::shared_ptr<ModelMeasurement<N_X, N_Z>> model_measurement) : model_measurement(model_measurement) {}
     };
 
-    std::vector<std::shared_ptr<InterfaceWrapperMM>> models_measurement_;
-    Eigen::VectorXd y_;
-    Eigen::MatrixXd S_;
+    std::vector<std::shared_ptr<WrapperInterface>> models_measurement_;
 
-    void _compute_weights();
-    Eigen::Matrix<double, N_X + N_W, 2 * (N_X + N_W) + 1> _generate_sigma_points(const VectorX& x, const MatrixX& P);
+    void computeWeights();
+    void computeAugmentedSigmaPoints(Eigen::Matrix<double, N_AUG, N_SIGMA>& x_sigma);
 };
 
 } // namespace filters_ukf_core

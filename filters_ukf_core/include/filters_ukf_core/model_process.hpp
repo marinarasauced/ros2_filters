@@ -20,7 +20,8 @@ public:
     virtual VectorX f(
         const VectorX& x,
         const VectorU& u,
-        const VectorW& w
+        const VectorW& w,
+        double t
     ) const = 0;
 };
 

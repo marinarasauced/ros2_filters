@@ -12,7 +12,7 @@ find_package(rosidl_default_generators REQUIRED)
 
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/FiltersInnov.msg"
+  "msg/FiltersInnovation.msg"
   "msg/FiltersState.msg"
 
   DEPENDENCIES "geometry_msgs" "std_msgs"

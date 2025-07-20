@@ -7,7 +7,7 @@
 namespace filters_ukf_example
 {
 
-template <int N_X>
+template <int N_X, int N_Z>
 class H2 : public filters_ukf_core::ModelMeasurement<N_X, 1>
 {
 public:

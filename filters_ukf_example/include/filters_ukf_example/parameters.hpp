@@ -19,25 +19,13 @@ struct BlueROV2Parameters
 
     double gravity = 9.81;
 
-    struct Sensor1
-    {
-
-    };
-
     struct Sensor2
     {
         double pressure_atm = 101325.0;
         double rho = 1000.0;
     };
 
-    struct Sensor3
-    {
-
-    };
-
-    Sensor1 z1;
     Sensor2 z2;
-    Sensor3 z3;
 };
 
 } // namespace filters_ukf_example

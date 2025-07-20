@@ -10,4 +10,4 @@ std_msgs/Header header
 
 #
 float64[] innov
-float64[] innov_cov
+float64[] cov
