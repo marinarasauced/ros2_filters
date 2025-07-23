@@ -136,6 +136,8 @@ void UKFCore<N_X, N_U, N_W>::updateMM(
     Eigen::Matrix<double, N_Z, 1> y = z - z_pred;
     x_ += K * y;
     P_ -= K * S * K.transpose();
+
+    model_measurement->setInnovation(y);
 }
 
 

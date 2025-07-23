@@ -18,6 +18,12 @@ public:
 
     virtual VectorZ h(const VectorX& x) const = 0;
     virtual MatrixZ R() const = 0;
+
+    VectorZ getInnovation() const { return y_; }
+    void setInnovation(const VectorZ& y) { y_ = y; }
+
+private:
+    VectorZ y_;
 };
 
 } // namespace filters_ukf_core

@@ -39,6 +39,7 @@ private:
 
     rclcpp::Publisher<filters_msgs::msg::FiltersState>::SharedPtr _publisher_x;
     rclcpp::Publisher<filters_msgs::msg::FiltersInnovation>::SharedPtr _publisher_y;
+    rclcpp::Publisher<filters_msgs::msg::FiltersState>::SharedPtr _publisher_z;
 
     rclcpp::Subscription<sensor_msgs::msg::FluidPressure>::SharedPtr _subscription_z2;
     void _handle_subscription_z2(const sensor_msgs::msg::FluidPressure::SharedPtr msg);

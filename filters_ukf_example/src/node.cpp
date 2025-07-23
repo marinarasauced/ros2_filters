@@ -14,6 +14,8 @@ UKFNode::UKFNode() : Node("ukf_node")
     // Eigen::Matrix<double, N_W, 1> w_mean = Eigen::Matrix<double, N_W, 1>::Zero();
     Eigen::Matrix<double, N_W, N_W> Q = Eigen::Matrix<double, N_W, N_W>::Identity() * 1.0;
 
+    Q(0, 0) = 0.2;
+
     _publisher_x = this->create_publisher<filters_msgs::msg::FiltersState>(
         "filters/ukf/state",
         10
@@ -21,6 +23,11 @@ UKFNode::UKFNode() : Node("ukf_node")
 
     _publisher_y = this->create_publisher<filters_msgs::msg::FiltersInnovation>(
         "filters/ukf/innov",
+        10
+    );
+
+    _publisher_z = this->create_publisher<filters_msgs::msg::FiltersState>(
+        "filters/ukf/state_raw",
         10
     );
 
@@ -84,6 +91,12 @@ void UKFNode::_handle_subscription_z2(
         }
     }
 
+    filters_msgs::msg::FiltersState msg_state_raw;
+    msg_state_raw.header.stamp = this->now();
+    msg_state_raw.state.resize(N_X);
+
+    msg_state_raw.state[0] = (-params_.z2.pressure_atm + msg->fluid_pressure) / (params_.z2.rho * params_.gravity);
+    _publisher_z->publish(msg_state_raw);
     // for (int i = 0; i < y.rows(); ++i) {
     //     msg_innov.innov[i] = y(i);
     //     msg_innov.cov[2 * i + 0] = 2.0 * std::sqrt(S(i, i));
