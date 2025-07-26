@@ -1,18 +1,18 @@
-#ifndef _FILTERS_UKF_EXAMPLE_WRAP_MODEL_HPP
-#define _FILTERS_UKF_EXAMPLE_WRAP_MODEL_HPP
+#ifndef _FILTERS_AUKF_EXAMPLE_WRAP_MODEL_HPP
+#define _FILTERS_AUKF_EXAMPLE_WRAP_MODEL_HPP
 
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/fluid_pressure.hpp>
 
 #include "filters_msgs/msg/filters_state.hpp"
 #include "filters_msgs/msg/filters_innovation.hpp"
-#include "filters_ukf_core/core.hpp"
-#include "filters_ukf_example/parameters.hpp"
-#include "filters_ukf_example/wrap_measurement.hpp"
-#include "filters_ukf_example/wrap_process.hpp"
+#include "filters_aukf_core/core.hpp"
+#include "filters_aukf_example/parameters.hpp"
+#include "filters_aukf_example/wrap_measurement.hpp"
+#include "filters_aukf_example/wrap_process.hpp"
 
 
-namespace filters_ukf_example
+namespace filters_aukf_example
 {
 
 class UKFNode : public rclcpp::Node
@@ -22,7 +22,7 @@ public:
     static constexpr int N_U = 0;
     static constexpr int N_W = 1;
 
-    using UKF = filters_ukf_core::UKFCore<N_X, N_U, N_W>;
+    using UKF = filters_aukf_core::AUKFCore<N_X, N_U, N_W>;
     using VectorX = typename UKF::VectorX;
     using MatrixX = typename UKF::MatrixX;
     using VectorW = typename UKF::VectorW;
@@ -47,6 +47,6 @@ private:
     rclcpp::Time tic;
 };
 
-} // namespace filters_ukf_example
+} // namespace filters_aukf_example
 
-#endif // _FILTERS_UKF_EXAMPLE_WRAP_MODEL_HPP
+#endif // _FILTERS_AUKF_EXAMPLE_WRAP_MODEL_HPP

@@ -1,7 +1,7 @@
-#ifndef _FILTERS_UKF_EXAMPLE_PARAMETERS_HPP
-#define _FILTERS_UKF_EXAMPLE_PARAMETERS_HPP
+#ifndef _FILTERS_AUKF_EXAMPLE_PARAMETERS_HPP
+#define _FILTERS_AUKF_EXAMPLE_PARAMETERS_HPP
 
-namespace filters_ukf_example
+namespace filters_aukf_example
 {
 
 struct BlueROV2Parameters
@@ -28,6 +28,6 @@ struct BlueROV2Parameters
     Sensor2 z2;
 };
 
-} // namespace filters_ukf_example
+} // namespace filters_aukf_example
 
-#endif // _FILTERS_UKF_EXAMPLE_PARAMETERS_HPP
+#endif // _FILTERS_AUKF_EXAMPLE_PARAMETERS_HPP

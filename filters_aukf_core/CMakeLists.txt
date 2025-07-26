@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(filters_ukf_core)
+project(filters_aukf_core)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -15,8 +15,8 @@ include_directories(
 )
 
 install(
-  DIRECTORY include/filters_ukf_core/
-  DESTINATION include/filters_ukf_core
+  DIRECTORY include/filters_aukf_core/
+  DESTINATION include/filters_aukf_core
 )
 
 ament_export_include_directories(include)

@@ -1,7 +1,7 @@
 
-#include "filters_ukf_example/node.hpp"
+#include "filters_aukf_example/node.hpp"
 
-namespace filters_ukf_example
+namespace filters_aukf_example
 {
 
 UKFNode::UKFNode() : Node("ukf_node")
@@ -107,13 +107,13 @@ void UKFNode::_handle_subscription_z2(
     // _publisher_y->publish(msg_innov);
 }
 
-} // namespace filters_ukf_example
+} // namespace filters_aukf_example
 
 
 int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
-    auto node = std::make_shared<filters_ukf_example::UKFNode>();
+    auto node = std::make_shared<filters_aukf_example::UKFNode>();
     rclcpp::spin(node);
     rclcpp::shutdown();
     return 0;

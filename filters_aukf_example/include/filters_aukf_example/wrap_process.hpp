@@ -1,14 +1,14 @@
-#ifndef _FILTERS_UKF_EXAMPLE_WRAP_PROCESS_HPP
-#define _FILTERS_UKF_EXAMPLE_WRAP_PROCESS_HPP
+#ifndef _FILTERS_AUKF_EXAMPLE_WRAP_PROCESS_HPP
+#define _FILTERS_AUKF_EXAMPLE_WRAP_PROCESS_HPP
 
-#include "filters_ukf_core/core.hpp"
-#include "filters_ukf_example/parameters.hpp"
+#include "filters_aukf_core/core.hpp"
+#include "filters_aukf_example/parameters.hpp"
 
-namespace filters_ukf_example
+namespace filters_aukf_example
 {
 
 template<int N_X, int N_U, int N_W>
-class F : public filters_ukf_core::ModelProcess<N_X, N_U, N_W> {
+class F : public filters_aukf_core::ModelProcess<N_X, N_U, N_W> {
 public:
     using VectorX = Eigen::Matrix<double, N_X, 1>;
     using VectorU = Eigen::Matrix<double, N_U, 1>;
@@ -27,6 +27,6 @@ public:
     }
 };
 
-} // namespace filters_ukf_example
+} // namespace filters_aukf_example
 
-#endif // _FILTERS_UKF_EXAMPLE_WRAP_PROCESS_HPP
+#endif // _FILTERS_AUKF_EXAMPLE_WRAP_PROCESS_HPP

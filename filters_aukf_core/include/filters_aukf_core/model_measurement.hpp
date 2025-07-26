@@ -1,9 +1,9 @@
-#ifndef _FILTERS_UKF_MODEL_MEASUREMENT_HPP
-#define _FILTERS_UKF_MODEL_MEASUREMENT_HPP
+#ifndef _FILTERS_AUKF_MODEL_MEASUREMENT_HPP
+#define _FILTERS_AUKF_MODEL_MEASUREMENT_HPP
 
 #include <Eigen/Dense>
 
-namespace filters_ukf_core
+namespace filters_aukf_core
 {
 
 template<int N_X, int N_Z>
@@ -26,6 +26,6 @@ private:
     VectorZ y_;
 };
 
-} // namespace filters_ukf_core
+} // namespace filters_aukf_core
 
-#endif // _FILTERS_UKF_MODEL_MEASUREMENT_HPP
+#endif // _FILTERS_AUKF_MODEL_MEASUREMENT_HPP

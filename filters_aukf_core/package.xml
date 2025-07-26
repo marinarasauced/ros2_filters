@@ -1,18 +1,15 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>filters_ukf_example</name>
+  <name>filters_aukf_core</name>
   <version>0.0.0</version>
-  <description>ROS 2 package containing example UKF state estimation filter for BlueROV2.</description>
+  <description>ROS 2 package containing templated C++ implementation of UKF state estimation filter.</description>
   <maintainer email="marinarasauced@outlook.com">marinarasauced</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <depend>rclcpp</depend>
-  <depend>filters_msgs</depend>
-  <depend>filters_ukf_core</depend>
-  <depend>sensor_msgs</depend>
+  <depend>Boost</depend>
   <depend>Eigen3</depend>
 
   <export>

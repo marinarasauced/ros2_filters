@@ -1,10 +1,10 @@
-#ifndef _FILTERS_UKF_MODEL_PROCESS_HPP
-#define _FILTERS_UKF_MODEL_PROCESS_HPP
+#ifndef _FILTERS_AUKF_MODEL_PROCESS_HPP
+#define _FILTERS_AUKF_MODEL_PROCESS_HPP
 
 #include <Eigen/Dense>
 // #include <Eigen/Geometry>
 
-namespace filters_ukf_core
+namespace filters_aukf_core
 {
 
 template<int N_X, int N_U, int N_W>
@@ -25,6 +25,6 @@ public:
     ) const = 0;
 };
 
-} // namespace filters_ukf_core
+} // namespace filters_aukf_core
 
-#endif // _FILTERS_UKF_MODEL_PROCESS_HPP
+#endif // _FILTERS_AUKF_MODEL_PROCESS_HPP

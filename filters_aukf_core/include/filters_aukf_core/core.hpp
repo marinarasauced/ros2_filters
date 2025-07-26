@@ -1,5 +1,5 @@
-#ifndef _FILTERS_UKF_CORE_HPP
-#define _FILTERS_UKF_CORE_HPP
+#ifndef _FILTERS_AUKF_CORE_HPP
+#define _FILTERS_AUKF_CORE_HPP
 
 #include <memory>
 #include <mutex>
@@ -7,14 +7,14 @@
 #include <string>
 #include <vector>
 
-#include "filters_ukf_core/model_measurement.hpp"
-#include "filters_ukf_core/model_process.hpp"
+#include "filters_aukf_core/model_measurement.hpp"
+#include "filters_aukf_core/model_process.hpp"
 
-namespace filters_ukf_core
+namespace filters_aukf_core
 {
 
 template<int N_X, int N_U, int N_W>
-class UKFCore
+class AUKFCore
 {
 public:
     using VectorX = Eigen::Matrix<double, N_X, 1>;
@@ -23,7 +23,7 @@ public:
     using MatrixX = Eigen::Matrix<double, N_X, N_X>;
     using MatrixW = Eigen::Matrix<double, N_W, N_W>;
 
-    UKFCore(
+    AUKFCore(
         const std::shared_ptr<ModelProcess<N_X, N_U, N_W>>& model_process,
         const VectorX& x0,
         const MatrixX& P0,
@@ -84,8 +84,8 @@ private:
     void computeAugmentedSigmaPoints(Eigen::Matrix<double, N_AUG, N_SIGMA>& x_sigma);
 };
 
-} // namespace filters_ukf_core
+} // namespace filters_aukf_core
 
-#include "filters_ukf_core/core_impl.hpp"
+#include "filters_aukf_core/core_impl.hpp"
 
-#endif // _FILTERS_UKF_CORE_HPP
+#endif // _FILTERS_AUKF_CORE_HPP

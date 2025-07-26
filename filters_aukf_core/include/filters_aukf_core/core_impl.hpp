@@ -1,13 +1,13 @@
-#ifndef _FILTERS_UKF_CORE_IMPL_HPP
-#define _FILTERS_UKF_CORE_IMPL_HPP
+#ifndef _FILTERS_AUKF_CORE_IMPL_HPP
+#define _FILTERS_AUKF_CORE_IMPL_HPP
 
-#include "filters_ukf_core/core.hpp"
+#include "filters_aukf_core/core.hpp"
 
-namespace filters_ukf_core
+namespace filters_aukf_core
 {
 
 template<int N_X, int N_U, int N_W>
-UKFCore<N_X, N_U, N_W>::UKFCore(
+AUKFCore<N_X, N_U, N_W>::AUKFCore(
     const std::shared_ptr<ModelProcess<N_X, N_U, N_W>>& model_process,
     const VectorX& x0,
     const MatrixX& P0,
@@ -32,7 +32,7 @@ UKFCore<N_X, N_U, N_W>::UKFCore(
 
 
 template<int N_X, int N_U, int N_W>
-typename UKFCore<N_X, N_U, N_W>::VectorX UKFCore<N_X, N_U, N_W>::computeRK4Step(
+typename AUKFCore<N_X, N_U, N_W>::VectorX AUKFCore<N_X, N_U, N_W>::computeRK4Step(
     const VectorX& x,
     const VectorU& u,
     const VectorW& w,
@@ -58,7 +58,7 @@ typename UKFCore<N_X, N_U, N_W>::VectorX UKFCore<N_X, N_U, N_W>::computeRK4Step(
 
 
 template<int N_X, int N_U, int N_W>
-void UKFCore<N_X, N_U, N_W>::predictMP(
+void AUKFCore<N_X, N_U, N_W>::predictMP(
     const VectorU& u,
     double t,
     double dt
@@ -90,7 +90,7 @@ void UKFCore<N_X, N_U, N_W>::predictMP(
 
 template<int N_X, int N_U, int N_W>
 template<int N_Z>
-void UKFCore<N_X, N_U, N_W>::addMeasurementModel(
+void AUKFCore<N_X, N_U, N_W>::addMeasurementModel(
     std::shared_ptr<ModelMeasurement<N_X, N_Z>> model_measurement
 ) {
     std::lock_guard<std::mutex> lock(mutex_);
@@ -102,7 +102,7 @@ void UKFCore<N_X, N_U, N_W>::addMeasurementModel(
 
 template<int N_X, int N_U, int N_W>
 template<int N_Z>
-void UKFCore<N_X, N_U, N_W>::updateMM(
+void AUKFCore<N_X, N_U, N_W>::updateMM(
     std::shared_ptr<ModelMeasurement<N_X, N_Z>> model_measurement,
     Eigen::Matrix<double, N_Z, 1>& z
 ) {
@@ -142,28 +142,28 @@ void UKFCore<N_X, N_U, N_W>::updateMM(
 
 
 template<int N_X, int N_U, int N_W>
-typename UKFCore<N_X, N_U, N_W>::VectorX UKFCore<N_X, N_U, N_W>::getX() const {
+typename AUKFCore<N_X, N_U, N_W>::VectorX AUKFCore<N_X, N_U, N_W>::getX() const {
     std::lock_guard<std::mutex> lock(mutex_);
     return x_;
 }
 
 
 template<int N_X, int N_U, int N_W>
-typename UKFCore<N_X, N_U, N_W>::MatrixX UKFCore<N_X, N_U, N_W>::getP() const {
+typename AUKFCore<N_X, N_U, N_W>::MatrixX AUKFCore<N_X, N_U, N_W>::getP() const {
     std::lock_guard<std::mutex> lock(mutex_);
     return P_;
 }
 
 
 template<int N_X, int N_U, int N_W>
-typename UKFCore<N_X, N_U, N_W>::MatrixW UKFCore<N_X, N_U, N_W>::getQ() const {
+typename AUKFCore<N_X, N_U, N_W>::MatrixW AUKFCore<N_X, N_U, N_W>::getQ() const {
     std::lock_guard<std::mutex> lock(mutex_);
     return Q_;
 }
 
 
 template<int N_X, int N_U, int N_W>
-void UKFCore<N_X, N_U, N_W>::computeWeights(
+void AUKFCore<N_X, N_U, N_W>::computeWeights(
 ) {
     weights_mean_.resize(N_SIGMA);
     weights_cov_.resize(N_SIGMA);
@@ -179,7 +179,7 @@ void UKFCore<N_X, N_U, N_W>::computeWeights(
 
 
 template<int N_X, int N_U, int N_W>
-void UKFCore<N_X, N_U, N_W>::computeAugmentedSigmaPoints(
+void AUKFCore<N_X, N_U, N_W>::computeAugmentedSigmaPoints(
     Eigen::Matrix<double, N_AUG, N_SIGMA>& x_sigma
 ) {
     using VectorA = Eigen::Matrix<double, N_AUG, 1>;
@@ -202,6 +202,6 @@ void UKFCore<N_X, N_U, N_W>::computeAugmentedSigmaPoints(
     }
 }
 
-} // namespace filters_ukf_core
+} // namespace filters_aukf_core
 
-#endif // _FILTERS_UKF_CORE_IMPL_HPP
+#endif // _FILTERS_AUKF_CORE_IMPL_HPP
