@@ -2,7 +2,6 @@
 #define _FILTERS_AUKF_MODEL_PROCESS_HPP
 
 #include <Eigen/Dense>
-// #include <Eigen/Geometry>
 
 namespace filters_aukf_core
 {
