@@ -8,7 +8,7 @@ This package contains templated state estimation filter classes for traditional 
 
 ## License
 
-This package is released under an [MIT License](https://github.com/marinarasauced/ros2_filters_templates/blob/main/LICENSE).
+This package is released under an [BDS-3-Clause License](https://github.com/marinarasauced/ros2_filters_templates/blob/main/LICENSE).
 
 Authors: [Marina Nelson](https://github.com/marinarasauced) <br/>
 Maintainer: Marina Nelson, marinarasauced@outlook.com
