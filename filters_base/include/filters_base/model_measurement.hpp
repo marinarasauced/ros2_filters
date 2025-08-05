@@ -6,8 +6,15 @@
 namespace filters_base
 {
 
+class ModelMeasurementInterface
+{
+public:
+    virtual ~ModelMeasurementInterface() = default;
+};
+
+
 template<typename MeasurementT>
-class ModelMeasurement
+class ModelMeasurement : public ModelMeasurementInterface
 {
 public:
     using VectorX = typename MeasurementT::VectorX;

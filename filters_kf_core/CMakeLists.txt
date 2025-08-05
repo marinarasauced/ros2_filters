@@ -21,4 +21,5 @@ install(
   DESTINATION include/${PROJECT_NAME}
 )
 
+ament_export_include_directories(include)
 ament_package()

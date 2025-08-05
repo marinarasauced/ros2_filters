@@ -18,16 +18,36 @@ Measurement<MsgT>::Measurement(
 
 
 template<typename MsgT>
-rclcpp::Time Measurement<MsgT>::stamp(
-) const {
-    return rclcpp::Time(msg_->header.stamp);
+Measurement<MsgT>::Measurement(
+    const Msg& msg,
+    Callback callback,
+    const rclcpp::Time& stamp
+) :
+    msg_(msg),
+    callback_(callback),
+    stamp_(stamp)
+{
 }
+
+
+template<typename MsgT>
+rclcpp::Time Measurement<MsgT>::stamp() const {
+    if (stamp_) {
+        return *stamp_;
+    }
+    if constexpr (header<MsgT>::value) {
+        return rclcpp::Time(msg_->header.stamp);
+    } else {
+        throw std::runtime_error("Message does not have header.stamp and no override was provided.");
+    }
+}
+
 
 
 template<typename MsgT>
 void Measurement<MsgT>::dispatch(
 ) {
-    callback_(msg_);
+    callback_(*msg_);
 }
 
 } // end namespace filters_base

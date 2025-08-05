@@ -9,6 +9,14 @@
 namespace filters_base
 {
 
+template<typename T, typename = void>
+struct header : std::false_type {};
+
+
+template<typename T>
+struct header<T, std::void_t<decltype(std::declval<T>().header)>> : std::true_type {};
+
+
 class MeasurementInterface
 {
 public:
@@ -29,6 +37,7 @@ public:
     using Callback = std::function<void(const MsgT&)>;
 
     Measurement(const Msg& msg, Callback callback);
+    Measurement(const Msg& msg, Callback callback, const rclcpp::Time& stamp);
 
     rclcpp::Time stamp() const override;
     void dispatch() override;
@@ -36,6 +45,7 @@ public:
 private:
     Msg msg_;
     Callback callback_;
+    std::optional<rclcpp::Time> stamp_;
 };
 
 } // end namespace filters_base

@@ -16,7 +16,7 @@
 namespace filters_base
 {
 
-template<typename ProcessT, typename MeasurementT>
+template<typename ProcessT>
 class FilterInterface
 {
 public:
@@ -27,13 +27,15 @@ public:
 
     virtual ~FilterInterface() = default;
 
-    virtual void predict(const std::shared_ptr<ModelProcess<ProcessT>>& mp, const ProcessT::VectorU& u, const double t, const double dt) = 0;
-    virtual void update(const std::shared_ptr<ModelMeasurement<MeasurementT>>& mm, const MeasurementT::VectorZ& z, const double t) = 0;
+    virtual void predict(const std::shared_ptr<ModelProcess<ProcessT>>& mp, const typename ProcessT::VectorU& u, const double t, const double dt) = 0;
+
+    template<typename MeasurementT>
+    void update(const std::shared_ptr<ModelMeasurement<MeasurementT>>& mm, const typename MeasurementT::VectorZ& z, const double t);
 };
 
 
-template<typename ProcessT, typename MeasurementT>
-class Filter : public FilterInterface<ProcessT, MeasurementT>
+template<typename ProcessT>
+class Filter : public FilterInterface<ProcessT>
 {
 public:
     using VectorX = typename ProcessT::VectorX;
@@ -43,10 +45,23 @@ public:
 
     Filter(const VectorX& x0, const MatrixXX& P0, const rclcpp::Time& tic);
 
-    VectorX rk4step(const std::shared_ptr<ModelProcess<ProcessT>> model_process, const VectorX& x, const VectorU& u, const VectorW& w, double t, double dt) const;
+    VectorX rk4Step(const std::shared_ptr<ModelProcess<ProcessT>> model_process, const VectorX& x, const VectorU& u, const VectorW& w, double t, double dt) const;
 
-    void enqueue(const std::shared_ptr<MeasurementInterface>& measurement);
-    void dequeue(const rclcpp::Time toc);
+    void enQueue(const std::shared_ptr<MeasurementInterface>& measurement);
+    void deQueue(const std::shared_ptr<ModelProcess<ProcessT>>& model_process, const rclcpp::Time toc);
+
+    void addModelProcess(const std::shared_ptr<ModelProcess<ProcessT>>& model_process);
+
+    template<typename MeasurementT>
+    void addModelMeasurement(const std::shared_ptr<ModelMeasurement<MeasurementT>>& model_measurement);
+
+    void removeModelProcess(const std::shared_ptr<ModelProcess<ProcessT>>& model_process);
+
+    template<typename MeasurementT>
+    void removeModelMeasurement(const std::shared_ptr<ModelMeasurement<MeasurementT>>& model_measurement);
+
+    const VectorX& state() const { return x_; }
+    const MatrixXX& covariance() const { return P_; }
 
 protected:
     VectorX x_;
@@ -55,9 +70,8 @@ protected:
 
 private:
     std::priority_queue<std::shared_ptr<MeasurementInterface>, std::vector<std::shared_ptr<MeasurementInterface>>, std::greater<>> queue_;
-
-    std::shared_ptr<ModelProcess<ProcessT>> model_process_;
-    std::vector<std::shared_ptr<ModelMeasurement<MeasurementT>>> models_measurement_;
+    std::vector<std::shared_ptr<ModelProcess<ProcessT>>> models_process_;
+    std::vector<std::shared_ptr<ModelMeasurementInterface>> models_measurement_;
 };
 
 } // end namespace filters_base

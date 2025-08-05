@@ -6,8 +6,8 @@
 namespace filters_kf_core
 {
 
-template<typename ProcessT, typename MeasurementT>
-class FilterKF : public filters_base::Filter<ProcessT, MeasurementT>
+template<typename ProcessT>
+class FilterKF : public filters_base::Filter<ProcessT>
 {
 public:
     using VectorX = typename ProcessT::VectorX;
@@ -19,9 +19,9 @@ public:
     FilterKF(const VectorX& x0, const MatrixXX& P0, const rclcpp::Time& tic);
 
     void predict(const std::shared_ptr<filters_base::ModelProcess<ProcessT>>& mp, const VectorU& u, double t, double dt) override;
-    void update(const std::shared_ptr<filters_base::ModelMeasurement<MeasurementT>>& mm, const typename MeasurementT::VectorZ& z, double t) override;
 
-
+    template<typename MeasurementT>
+    void update(const std::shared_ptr<filters_base::ModelMeasurement<MeasurementT>>& mm, const typename MeasurementT::VectorZ& z, double t);
 };
 
 } // end namespace filters_kf_core

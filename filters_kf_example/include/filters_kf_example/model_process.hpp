@@ -1,0 +1,70 @@
+#ifndef _FILTERS_KF_EXAMPLE_MODEL_PROCESS_HPP
+#define _FILTERS_KF_EXAMPLE_MODEL_PROCESS_HPP
+
+#include "filters_base/model_process.hpp"
+#include "filters_base/types.hpp"
+
+namespace filters_kf_example
+{
+
+struct KFExampleProcessT : public filters_base::TypesProcess<2, 1, 2>
+{
+};
+
+
+class KFExampleProcess : public filters_base::ModelProcess<KFExampleProcessT>
+{
+public:
+    using VectorX = KFExampleProcessT::VectorX;
+    using VectorU = KFExampleProcessT::VectorU;
+    using VectorW = KFExampleProcessT::VectorW;
+    using MatrixXX = KFExampleProcessT::MatrixXX;
+    using MatrixWW = KFExampleProcessT::MatrixWW;
+
+    VectorX f(const VectorX& x, const VectorU& u, const VectorW& w, double t, double dt) const override
+    {
+        VectorX dx;
+        dx(0) = x(1);
+        dx(1) = u(0) + w(0);
+        return dx;
+    }
+
+    MatrixXX F(const VectorX& x, const VectorU& u, const VectorW& w, double t, double dt) const override
+    {
+        MatrixXX F;
+        F(0, 0) = 0.0;
+        F(0, 1) = 1.0;
+        F(1, 0) = 0.0;
+        F(1, 1) = 0.0;
+        return F;
+    }
+
+    MatrixXX A(const VectorX& x, double t, double dt) const override
+    {
+        MatrixXX A;
+        A(0, 0) = 1.0;
+        A(0, 1) = dt;
+        A(1, 0) = 0.0;
+        A(1, 1) = 1.0;
+        return A;
+    }
+
+    MatrixXX G(const VectorW& w, double t, double dt) const override
+    {
+        MatrixXX G;
+        G(0, 0) = 1.0;
+        G(0, 1) = 0.0;
+        G(1, 0) = 0.0;
+        G(1, 1) = 1.0;
+        return G;
+    }
+
+    MatrixWW Q(double t, double dt) const override
+    {
+        return MatrixWW::Identity() * 0.01;
+    }
+};
+
+} // end namespace filters_kf_core
+
+#endif // _FILTERS_KF_EXAMPLE_MODEL_PROCESS_HPP
