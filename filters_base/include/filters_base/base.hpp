@@ -27,8 +27,8 @@ public:
 
     virtual ~FilterInterface() = default;
 
-    virtual void predict(const ModelProcess<ProcessT>& mp, const ProcessT::VectorU& u, const double t, const double dt) = 0;
-    virtual void update(const ModelMeasurement<MeasurementT>& mm, const MeasurementT::VectorZ& z, const double t) = 0;
+    virtual void predict(const std::shared_ptr<ModelProcess<ProcessT>>& mp, const ProcessT::VectorU& u, const double t, const double dt) = 0;
+    virtual void update(const std::shared_ptr<ModelMeasurement<MeasurementT>>& mm, const MeasurementT::VectorZ& z, const double t) = 0;
 };
 
 

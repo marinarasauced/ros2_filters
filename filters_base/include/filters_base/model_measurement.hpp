@@ -19,6 +19,7 @@ public:
 
     virtual VectorZ h(const VectorX& x) const = 0;
     virtual MatrixZX H(const VectorX& x) const = 0;
+
     virtual MatrixZZ R() const = 0;
 };
 

@@ -14,7 +14,7 @@ Filter<ProcessT, MeasurementT>::Filter(
 ) :
     x_(x0),
     P_(P0),
-    tic_(tic)
+    tic(tic)
 {
 }
 

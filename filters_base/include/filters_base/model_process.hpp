@@ -20,6 +20,10 @@ public:
     
     virtual VectorX f(const VectorX& x, const VectorU& u, const VectorW& w, double t, double dt) const = 0;
     virtual MatrixXX F(const VectorX& x, const VectorU& u, const VectorW& w, double t, double dt) const = 0;
+
+    virtual MatrixXX A(const VectorX& x, double t, double dt) const = 0;
+    virtual MatrixXX G(const VectorW& w, double t, double dt) const = 0;
+
     virtual MatrixWW Q(double t, double dt) const = 0;
 };
 
