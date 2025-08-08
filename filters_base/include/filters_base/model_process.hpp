@@ -6,8 +6,15 @@
 namespace filters_base
 {
 
+class ModelProcessInterface
+{
+public:
+    virtual ~ModelProcessInterface() = default;
+};
+
+
 template<typename ProcessT>
-class ModelProcess
+class ModelProcess : public ModelProcessInterface
 {
 public:
     using VectorX = typename ProcessT::VectorX;

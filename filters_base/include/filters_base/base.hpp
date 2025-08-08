@@ -17,7 +17,7 @@ namespace filters_base
 {
 
 template<typename ProcessT>
-class FilterInterface
+class FilterBaseInterface
 {
 public:
     using VectorX = typename ProcessT::VectorX;
@@ -25,7 +25,7 @@ public:
     using VectorW = typename ProcessT::VectorW;
     using MatrixXX = typename ProcessT::MatrixXX;
 
-    virtual ~FilterInterface() = default;
+    virtual ~FilterBaseInterface() = default;
 
     virtual void predict(const std::shared_ptr<ModelProcess<ProcessT>>& mp, const typename ProcessT::VectorU& u, const double t, const double dt) = 0;
 
@@ -35,7 +35,7 @@ public:
 
 
 template<typename ProcessT>
-class Filter : public FilterInterface<ProcessT>
+class FilterBase : public FilterBaseInterface<ProcessT>
 {
 public:
     using VectorX = typename ProcessT::VectorX;
@@ -43,7 +43,7 @@ public:
     using VectorW = typename ProcessT::VectorW;
     using MatrixXX = typename ProcessT::MatrixXX;
 
-    Filter(const VectorX& x0, const MatrixXX& P0, const rclcpp::Time& tic);
+    FilterBase(const VectorX& x0, const MatrixXX& P0, const rclcpp::Time& tic);
 
     VectorX rk4Step(const std::shared_ptr<ModelProcess<ProcessT>> model_process, const VectorX& x, const VectorU& u, const VectorW& w, double t, double dt) const;
 
@@ -70,7 +70,7 @@ protected:
 
 private:
     std::priority_queue<std::shared_ptr<MeasurementInterface>, std::vector<std::shared_ptr<MeasurementInterface>>, std::greater<>> queue_;
-    std::vector<std::shared_ptr<ModelProcess<ProcessT>>> models_process_;
+    std::vector<std::shared_ptr<ModelProcessInterface>> models_process_;
     std::vector<std::shared_ptr<ModelMeasurementInterface>> models_measurement_;
 };
 

@@ -8,18 +8,18 @@
 namespace filters_kf_example
 {
 
-struct KFExampleMeasurementT : public filters_base::TypesMeasurement<KFExampleProcessT, 1>
+struct MeasurementT : public filters_base::TypesMeasurement<ProcessT, 1>
 {
 };
 
 
-class KFExampleMeasurement : public filters_base::ModelMeasurement<KFExampleMeasurementT>
+class ModelMeasurement : public filters_base::ModelMeasurement<MeasurementT>
 {
 public:
-    using VectorX = KFExampleProcessT::VectorX;
-    using VectorZ = KFExampleMeasurementT::VectorZ;
-    using MatrixZX = KFExampleMeasurementT::MatrixZX;
-    using MatrixZZ = KFExampleMeasurementT::MatrixZZ;
+    using VectorX = ProcessT::VectorX;
+    using VectorZ = MeasurementT::VectorZ;
+    using MatrixZX = MeasurementT::MatrixZX;
+    using MatrixZZ = MeasurementT::MatrixZZ;
 
     VectorZ h(const VectorX& x) const override
     {

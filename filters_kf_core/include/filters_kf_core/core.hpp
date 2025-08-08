@@ -7,7 +7,7 @@ namespace filters_kf_core
 {
 
 template<typename ProcessT>
-class FilterKF : public filters_base::Filter<ProcessT>
+class FilterCore : public filters_base::FilterBase<ProcessT>
 {
 public:
     using VectorX = typename ProcessT::VectorX;
@@ -16,7 +16,7 @@ public:
     using MatrixXX = typename ProcessT::MatrixXX;
     using MatrixWW = typename ProcessT::MatrixWW;
 
-    FilterKF(const VectorX& x0, const MatrixXX& P0, const rclcpp::Time& tic);
+    FilterCore(const VectorX& x0, const MatrixXX& P0, const rclcpp::Time& tic);
 
     void predict(const std::shared_ptr<filters_base::ModelProcess<ProcessT>>& mp, const VectorU& u, double t, double dt) override;
 

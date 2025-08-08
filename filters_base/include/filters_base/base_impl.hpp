@@ -7,9 +7,9 @@ namespace filters_base
 {
 
 template<typename ProcessT>
-Filter<ProcessT>::Filter(
-    const typename Filter<ProcessT>::VectorX& x0,
-    const typename Filter<ProcessT>::MatrixXX& P0,
+FilterBase<ProcessT>::FilterBase(
+    const typename FilterBase<ProcessT>::VectorX& x0,
+    const typename FilterBase<ProcessT>::MatrixXX& P0,
     const rclcpp::Time& tic
 ) :
     x_(x0),
@@ -20,11 +20,11 @@ Filter<ProcessT>::Filter(
 
 
 template<typename ProcessT>
-typename Filter<ProcessT>::VectorX Filter<ProcessT>::rk4Step(
+typename FilterBase<ProcessT>::VectorX FilterBase<ProcessT>::rk4Step(
     const std::shared_ptr<ModelProcess<ProcessT>> model_process,
-    const typename Filter<ProcessT>::VectorX& x,
-    const typename Filter<ProcessT>::VectorU& u,
-    const typename Filter<ProcessT>::VectorW& w,
+    const typename FilterBase<ProcessT>::VectorX& x,
+    const typename FilterBase<ProcessT>::VectorU& u,
+    const typename FilterBase<ProcessT>::VectorW& w,
     double t,
     double dt
 ) const {
@@ -43,7 +43,7 @@ typename Filter<ProcessT>::VectorX Filter<ProcessT>::rk4Step(
 
 
 template<typename ProcessT>
-void Filter<ProcessT>::enQueue(
+void FilterBase<ProcessT>::enQueue(
     const std::shared_ptr<MeasurementInterface>& measurement
 ) {
     queue_.push(measurement);
@@ -51,7 +51,7 @@ void Filter<ProcessT>::enQueue(
 
 
 template<typename ProcessT>
-void Filter<ProcessT>::deQueue(
+void FilterBase<ProcessT>::deQueue(
     const std::shared_ptr<ModelProcess<ProcessT>>& model_process,
     const rclcpp::Time toc
 ) {
@@ -79,7 +79,7 @@ void Filter<ProcessT>::deQueue(
 
 
 template<typename ProcessT>
-void Filter<ProcessT>::addModelProcess(
+void FilterBase<ProcessT>::addModelProcess(
     const std::shared_ptr<ModelProcess<ProcessT>>& model_process
 ) {
     if (!model_process) {
@@ -92,7 +92,7 @@ void Filter<ProcessT>::addModelProcess(
 
 template<typename ProcessT>
 template<typename MeasurementT>
-void Filter<ProcessT>::addModelMeasurement(
+void FilterBase<ProcessT>::addModelMeasurement(
     const std::shared_ptr<ModelMeasurement<MeasurementT>>& model_measurement
 ) {
     if (!model_measurement) {
@@ -104,7 +104,7 @@ void Filter<ProcessT>::addModelMeasurement(
 
 
 template<typename ProcessT>
-void Filter<ProcessT>::removeModelProcess(
+void FilterBase<ProcessT>::removeModelProcess(
     const std::shared_ptr<ModelProcess<ProcessT>>& model_process
 ) {
     auto it = std::remove(models_process_.begin(), models_process_.end(), model_process);
@@ -118,7 +118,7 @@ void Filter<ProcessT>::removeModelProcess(
 
 template<typename ProcessT>
 template<typename MeasurementT>
-void Filter<ProcessT>::removeModelMeasurement(
+void FilterBase<ProcessT>::removeModelMeasurement(
     const std::shared_ptr<ModelMeasurement<MeasurementT>>& model_measurement
 ) {
     auto it = std::remove(models_measurement_.begin(), models_measurement_.end(), model_measurement);

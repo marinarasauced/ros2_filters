@@ -4,7 +4,7 @@
 namespace filters_kf_example
 {
 
-KFExampleNode::KFExampleNode(
+NodeFilter::NodeFilter(
 ) :
     Node("kf_example_node")
 {
@@ -23,11 +23,11 @@ KFExampleNode::KFExampleNode(
         now
     );
 
-    model_process_ = std::make_shared<KFExampleProcess>();
-    model_measurement_ = std::make_shared<KFExampleMeasurement>();
+    model_process_ = std::make_shared<ModelProcess>();
+    model_measurement_ = std::make_shared<ModelMeasurement>();
 
     filter_->addModelProcess(model_process_);
-    filter_->addModelMeasurement<KFExampleMeasurementT>(model_measurement_);
+    filter_->addModelMeasurement<MeasurementT>(model_measurement_);
 
     publisher_x_ = this->create_publisher<filters_kf_example::msg::FakeX>(
         "kf/example/node/x",
@@ -39,7 +39,7 @@ KFExampleNode::KFExampleNode(
         "kf/example/fake/z",
         10,
         std::bind(
-            &KFExampleNode::handle_subscription_z_,
+            &NodeFilter::handle_subscription_z_,
             this,
             std::placeholders::_1
         )
@@ -48,14 +48,14 @@ KFExampleNode::KFExampleNode(
     timer_ = this->create_wall_timer(
         std::chrono::milliseconds(100),
         std::bind(
-            &KFExampleNode::handle_timer_,
+            &NodeFilter::handle_timer_,
             this
         )
     );
 }
 
 
-void KFExampleNode::handle_publisher_x_(
+void NodeFilter::handle_publisher_x_(
 ) {
     auto state = filter_->state();
 
@@ -67,15 +67,15 @@ void KFExampleNode::handle_publisher_x_(
 }
 
 
-void KFExampleNode::handle_subscription_z_(
+void NodeFilter::handle_subscription_z_(
     const filters_kf_example::msg::FakeZ::SharedPtr msg
 ) {
     auto measurement = std::make_shared<filters_base::Measurement<filters_kf_example::msg::FakeZ>>(
         msg, 
         [this](const filters_kf_example::msg::FakeZ& msg_z) {
-            KFExampleMeasurementT::VectorZ z;
+            MeasurementT::VectorZ z;
             z(0) = msg_z.z1;
-            this->filter_->update<KFExampleMeasurementT>(model_measurement_, z, this->now().seconds());
+            this->filter_->update<MeasurementT>(model_measurement_, z, this->now().seconds());
         },
         this->now()
     );
@@ -84,7 +84,7 @@ void KFExampleNode::handle_subscription_z_(
 }
 
 
-void KFExampleNode::handle_timer_(
+void NodeFilter::handle_timer_(
 ) {
     filter_->deQueue(model_process_, this->now());
     handle_publisher_x_();
@@ -97,7 +97,7 @@ void KFExampleNode::handle_timer_(
 int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
-    auto node = std::make_shared<filters_kf_example::KFExampleNode>();
+    auto node = std::make_shared<filters_kf_example::NodeFilter>();
     rclcpp::spin(node);
     rclcpp::shutdown();
     return 0;

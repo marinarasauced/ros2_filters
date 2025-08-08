@@ -14,12 +14,12 @@
 namespace filters_kf_example
 {
 
-class KFExampleNode : public rclcpp::Node
+class NodeFilter : public rclcpp::Node
 {
 public:
-    using FilterT = filters_kf_core::FilterKF<KFExampleProcessT>;
+    using FilterT = filters_kf_core::FilterCore<ProcessT>;
 
-    KFExampleNode();
+    NodeFilter();
 
 private:
     rclcpp::Publisher<filters_kf_example::msg::FakeX>::SharedPtr publisher_x_;
@@ -31,8 +31,8 @@ private:
     void handle_timer_();
 
     std::shared_ptr<FilterT> filter_;
-    std::shared_ptr<KFExampleProcess> model_process_;
-    std::shared_ptr<KFExampleMeasurement> model_measurement_;
+    std::shared_ptr<ModelProcess> model_process_;
+    std::shared_ptr<ModelMeasurement> model_measurement_;
 
     std::default_random_engine rng_;
     std::normal_distribution<double> noise_{0.0, 0.1};
