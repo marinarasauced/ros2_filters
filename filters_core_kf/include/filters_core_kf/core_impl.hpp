@@ -1,9 +1,9 @@
-#ifndef _FILTERS_KF_CORE_IMPL_HPP
-#define _FILTERS_KF_CORE_IMPL_HPP
+#ifndef _FILTERS_CORE_KF_IMPL_HPP
+#define _FILTERS_CORE_KF_IMPL_HPP
 
-#include "filters_kf_core/core.hpp"
+#include "filters_core_kf/core.hpp"
 
-namespace filters_kf_core
+namespace filters_core_kf
 {
 
 template<typename ProcessT>
@@ -57,6 +57,6 @@ void FilterCore<ProcessT>::update(
     this->P_ = (MatrixXX::Identity() - K * H) * this->P_;
 }
 
-} // end namespace filters_kf_core
+} // end namespace filters_core_kf
 
-#endif // _FILTERS_KF_CORE_IMPL_HPP
+#endif // _FILTERS_CORE_KF_IMPL_HPP

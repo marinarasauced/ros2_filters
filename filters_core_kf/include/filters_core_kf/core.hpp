@@ -1,9 +1,9 @@
-#ifndef _FILTERS_KF_CORE_HPP
-#define _FILTERS_KF_CORE_HPP
+#ifndef _FILTERS_CORE_KF_HPP
+#define _FILTERS_CORE_KF_HPP
 
 #include "filters_base/base.hpp"
 
-namespace filters_kf_core
+namespace filters_core_kf
 {
 
 template<typename ProcessT>
@@ -24,8 +24,8 @@ public:
     void update(const std::shared_ptr<filters_base::ModelMeasurement<MeasurementT>>& mm, const typename MeasurementT::VectorZ& z, double t);
 };
 
-} // end namespace filters_kf_core
+} // end namespace filters_core_kf
 
-#include "filters_kf_core/core_impl.hpp"
+#include "filters_core_kf/core_impl.hpp"
 
-#endif // _FILTERS_KF_CORE_HPP
+#endif // _FILTERS_CORE_KF_HPP
