@@ -24,10 +24,10 @@ public:
 
     virtual ~ModelMeasurement() = default;
 
-    virtual VectorZ h(const VectorX& x) const = 0;
-    virtual MatrixZX H(const VectorX& x) const = 0;
+    virtual VectorZ h(const VectorX& x) const { throw std::runtime_error("h() not implemented"); };
+    virtual MatrixZX H(const VectorX& x) const { throw std::runtime_error("H() not implemented"); };
 
-    virtual MatrixZZ R() const = 0;
+    virtual MatrixZZ R() const { throw std::runtime_error("R() not implemented"); };
 };
 
 } // end namespace filters_base

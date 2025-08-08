@@ -21,13 +21,6 @@ public:
     using MatrixZX = MeasurementT::MatrixZX;
     using MatrixZZ = MeasurementT::MatrixZZ;
 
-    VectorZ h(const VectorX& x) const override
-    {
-        VectorZ z;
-        z(0) = x(1);
-        return z;
-    }
-
     MatrixZX H(const VectorX& x) const override
     {
         MatrixZX H;

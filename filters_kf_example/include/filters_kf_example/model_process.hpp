@@ -29,16 +29,6 @@ public:
         return dx;
     }
 
-    MatrixXX F(const VectorX& x, const VectorU& u, const VectorW& w, double t, double dt) const override
-    {
-        MatrixXX F;
-        F(0, 0) = 0.0;
-        F(0, 1) = 1.0;
-        F(1, 0) = 0.0;
-        F(1, 1) = 0.0;
-        return F;
-    }
-
     MatrixXX A(const VectorX& x, double t, double dt) const override
     {
         MatrixXX A;
