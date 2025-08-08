@@ -7,20 +7,20 @@ namespace filters_kf_core
 {
 
 template<typename ProcessT>
-FilterKF<ProcessT>::FilterKF(
-    const typename FilterKF<ProcessT>::VectorX& x0,
-    const typename FilterKF<ProcessT>::MatrixXX& P0,
+FilterCore<ProcessT>::FilterCore(
+    const typename FilterCore<ProcessT>::VectorX& x0,
+    const typename FilterCore<ProcessT>::MatrixXX& P0,
     const rclcpp::Time& tic
 ) :
-    filters_base::Filter<ProcessT>(x0, P0, tic)
+    filters_base::FilterBase<ProcessT>(x0, P0, tic)
 {
 }
 
 
 template<typename ProcessT>
-void FilterKF<ProcessT>::predict(
+void FilterCore<ProcessT>::predict(
     const std::shared_ptr<filters_base::ModelProcess<ProcessT>>& mp,
-    const typename FilterKF<ProcessT>::VectorU& u,
+    const typename FilterCore<ProcessT>::VectorU& u,
     const double t,
     const double dt
 ) {   
@@ -38,7 +38,7 @@ void FilterKF<ProcessT>::predict(
 
 template<typename ProcessT>
 template<typename MeasurementT>
-void FilterKF<ProcessT>::update(
+void FilterCore<ProcessT>::update(
     const std::shared_ptr<filters_base::ModelMeasurement<MeasurementT>>& mm,
     const typename MeasurementT::VectorZ& z,
     double t

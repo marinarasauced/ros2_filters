@@ -7,19 +7,19 @@
 namespace filters_kf_example
 {
 
-struct KFExampleProcessT : public filters_base::TypesProcess<2, 1, 2>
+struct ProcessT : public filters_base::TypesProcess<2, 1, 2>
 {
 };
 
 
-class KFExampleProcess : public filters_base::ModelProcess<KFExampleProcessT>
+class ModelProcess : public filters_base::ModelProcess<ProcessT>
 {
 public:
-    using VectorX = KFExampleProcessT::VectorX;
-    using VectorU = KFExampleProcessT::VectorU;
-    using VectorW = KFExampleProcessT::VectorW;
-    using MatrixXX = KFExampleProcessT::MatrixXX;
-    using MatrixWW = KFExampleProcessT::MatrixWW;
+    using VectorX = ProcessT::VectorX;
+    using VectorU = ProcessT::VectorU;
+    using VectorW = ProcessT::VectorW;
+    using MatrixXX = ProcessT::MatrixXX;
+    using MatrixWW = ProcessT::MatrixWW;
 
     VectorX f(const VectorX& x, const VectorU& u, const VectorW& w, double t, double dt) const override
     {
@@ -27,16 +27,6 @@ public:
         dx(0) = x(1);
         dx(1) = u(0) + w(0);
         return dx;
-    }
-
-    MatrixXX F(const VectorX& x, const VectorU& u, const VectorW& w, double t, double dt) const override
-    {
-        MatrixXX F;
-        F(0, 0) = 0.0;
-        F(0, 1) = 1.0;
-        F(1, 0) = 0.0;
-        F(1, 1) = 0.0;
-        return F;
     }
 
     MatrixXX A(const VectorX& x, double t, double dt) const override

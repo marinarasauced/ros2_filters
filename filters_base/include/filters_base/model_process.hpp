@@ -6,8 +6,15 @@
 namespace filters_base
 {
 
+class ModelProcessInterface
+{
+public:
+    virtual ~ModelProcessInterface() = default;
+};
+
+
 template<typename ProcessT>
-class ModelProcess
+class ModelProcess : public ModelProcessInterface
 {
 public:
     using VectorX = typename ProcessT::VectorX;
@@ -18,13 +25,13 @@ public:
 
     virtual ~ModelProcess() = default;
     
-    virtual VectorX f(const VectorX& x, const VectorU& u, const VectorW& w, double t, double dt) const = 0;
-    virtual MatrixXX F(const VectorX& x, const VectorU& u, const VectorW& w, double t, double dt) const = 0;
+    virtual VectorX f(const VectorX& x, const VectorU& u, const VectorW& w, double t, double dt) const { throw std::runtime_error("f() not implemented"); };
+    virtual MatrixXX F(const VectorX& x, const VectorU& u, const VectorW& w, double t, double dt) const { throw std::runtime_error("F() not implemented"); };
 
-    virtual MatrixXX A(const VectorX& x, double t, double dt) const = 0;
-    virtual MatrixXX G(const VectorW& w, double t, double dt) const = 0;
+    virtual MatrixXX A(const VectorX& x, double t, double dt) const { throw std::runtime_error("A() not implemented"); };
+    virtual MatrixXX G(const VectorW& w, double t, double dt) const { throw std::runtime_error("G() not implemented"); };
 
-    virtual MatrixWW Q(double t, double dt) const = 0;
+    virtual MatrixWW Q(double t, double dt) const { throw std::runtime_error("Q() not implemented"); };
 };
 
 } // end namespace filters_base

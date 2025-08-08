@@ -15,10 +15,10 @@
 namespace filters_kf_example
 {
 
-class KFExampleFake : public rclcpp::Node
+class NodeSensor : public rclcpp::Node
 {
 public:
-    KFExampleFake();
+    NodeSensor();
 
 private:
     rclcpp::Publisher<filters_kf_example::msg::FakeX>::SharedPtr publisher_x_;

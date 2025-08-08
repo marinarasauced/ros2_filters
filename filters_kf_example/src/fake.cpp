@@ -4,7 +4,7 @@
 namespace filters_kf_example
 {
     
-KFExampleFake::KFExampleFake(
+NodeSensor::NodeSensor(
 ) :
     Node("kf_example_fake"),
     x_(Eigen::VectorXd::Zero(2))
@@ -22,14 +22,14 @@ KFExampleFake::KFExampleFake(
     timer_ = this->create_wall_timer(
         std::chrono::milliseconds(50),
         std::bind(
-            &KFExampleFake::handle_timer_,
+            &NodeSensor::handle_timer_,
             this
         )
     );
 }
 
 
-void KFExampleFake::handle_timer_(
+void NodeSensor::handle_timer_(
 ) {
     rclcpp::Time now = this->now();
     double t = now.seconds();
@@ -55,7 +55,7 @@ void KFExampleFake::handle_timer_(
 int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
-    auto node = std::make_shared<filters_kf_example::KFExampleFake>();
+    auto node = std::make_shared<filters_kf_example::NodeSensor>();
     rclcpp::spin(node);
     rclcpp::shutdown();
     return 0;
