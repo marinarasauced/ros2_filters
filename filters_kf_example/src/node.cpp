@@ -34,7 +34,6 @@ NodeFilter::NodeFilter(
         10
     );
 
-
     subscription_z_ = this->create_subscription<filters_kf_example::msg::FakeZ>(
         "kf/example/fake/z",
         10,
