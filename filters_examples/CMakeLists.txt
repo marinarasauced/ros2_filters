@@ -32,25 +32,6 @@ rosidl_get_typesupport_target(
   "rosidl_typesupport_cpp"
 )
 
-# add_executable(
-#   node
-#   src/node.cpp
-# )
-
-# ament_target_dependencies(
-#   node
-#   "rclcpp"
-#   "std_msgs"
-#   "filters_base"
-#   "filters_kf_core"
-#   "Eigen3"
-# )
-
-# target_link_libraries(
-#   node
-#   ${cpp_typesupport_target}
-# )
-
 add_executable(
   sensor
   src/sensor.cpp
@@ -70,8 +51,27 @@ target_link_libraries(
   ${cpp_typesupport_target}
 )
 
+add_executable(
+  filter_kf
+  src/filter_kf.cpp
+)
+
+ament_target_dependencies(
+  filter_kf
+  "rclcpp"
+  "std_msgs"
+  "filters_base"
+  "filters_core_kf"
+  "Eigen3"
+)
+
+target_link_libraries(
+  filter_kf
+  ${cpp_typesupport_target}
+)
+
 install(
-  TARGETS sensor
+  TARGETS sensor filter_kf
   DESTINATION lib/${PROJECT_NAME}
 )
 
