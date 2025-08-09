@@ -2,7 +2,6 @@
 #define _FILTERS_EXAMPLES_MODEL_PROCESS_HPP
 
 #include "filters_base/model_process.hpp"
-#include "filters_base/types.hpp"
 
 namespace filters_examples
 {

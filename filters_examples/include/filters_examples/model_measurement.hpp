@@ -2,7 +2,6 @@
 #define FILTERS_EXAMPLES_MODEL_MEASUREMENT_HPP
 
 #include "filters_base/model_measurement.hpp"
-#include "filters_base/types.hpp"
 #include "filters_examples/model_process.hpp"
 
 namespace filters_examples
