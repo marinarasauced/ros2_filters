@@ -55,6 +55,6 @@ public:
     }
 };
 
-} // end namespace filters_kf_core
+} // end namespace filters_examples
 
 #endif // _FILTERS_EXAMPLES_MODEL_PROCESS_HPP

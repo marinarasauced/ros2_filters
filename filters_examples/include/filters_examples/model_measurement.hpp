@@ -3,9 +3,9 @@
 
 #include "filters_base/model_measurement.hpp"
 #include "filters_base/types.hpp"
-#include "filters_kf_example/model_process.hpp"
+#include "filters_examples/model_process.hpp"
 
-namespace filters_kf_example
+namespace filters_examples
 {
 
 struct MeasurementT : public filters_base::TypesMeasurement<ProcessT, 1>
@@ -37,6 +37,6 @@ public:
     }
 };
 
-} // end namespace filters_kf_core
+} // end namespace filters_examples
 
 #endif // FILTERS_EXAMPLES_MODEL_MEASUREMENT_HPP

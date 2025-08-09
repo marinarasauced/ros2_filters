@@ -6,16 +6,16 @@ namespace filters_examples
     
 NodeSensor::NodeSensor(
 ) :
-    Node("kf_example_fake"),
+    Node("filters_examples_sensor"),
     x_(Eigen::VectorXd::Zero(2))
 {
     publisher_x_ = this->create_publisher<filters_examples::msg::State>(
-        "kf/example/fake/x",
+        "filters/example/sensor/x",
         10
     );
 
     publisher_z_ = this->create_publisher<filters_examples::msg::Measurement>(
-        "kf/example/fake/z",
+        "filters/example/sensor/z",
         10
     );
 

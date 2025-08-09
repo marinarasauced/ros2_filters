@@ -6,7 +6,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include "filters_kf_core/core.hpp"
+#include "filters_core_kf/core.hpp"
 #include "filters_examples/msg/measurement.hpp"
 #include "filters_examples/msg/state.hpp"
 
@@ -30,6 +30,6 @@ private:
     std::normal_distribution<double> noise_{0.0, 0.1};
 };
 
-} // end namespace filters_kf_core
+} // end namespace filters_examples
 
 #endif // _FILTERS_EXAMPLES_SENSOR_NODE_HPP
