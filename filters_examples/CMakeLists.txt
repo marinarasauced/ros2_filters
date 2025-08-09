@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(filters_kf_example)
+project(filters_examples)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -9,7 +9,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(filters_base REQUIRED)
-find_package(filters_kf_core REQUIRED)
+find_package(filters_core_kf REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
@@ -21,8 +21,8 @@ include_directories(
 
 rosidl_generate_interfaces(
   ${PROJECT_NAME}
-  "msg/FakeX.msg"
-  "msg/FakeZ.msg"
+  "msg/State.msg"
+  "msg/Measurement.msg"
   DEPENDENCIES std_msgs
 )
 
@@ -32,46 +32,46 @@ rosidl_get_typesupport_target(
   "rosidl_typesupport_cpp"
 )
 
+# add_executable(
+#   node
+#   src/node.cpp
+# )
+
+# ament_target_dependencies(
+#   node
+#   "rclcpp"
+#   "std_msgs"
+#   "filters_base"
+#   "filters_kf_core"
+#   "Eigen3"
+# )
+
+# target_link_libraries(
+#   node
+#   ${cpp_typesupport_target}
+# )
+
 add_executable(
-  node
-  src/node.cpp
+  sensor
+  src/sensor.cpp
 )
 
 ament_target_dependencies(
-  node
+  sensor
   "rclcpp"
   "std_msgs"
   "filters_base"
-  "filters_kf_core"
+  "filters_core_kf"
   "Eigen3"
 )
 
 target_link_libraries(
-  node
-  ${cpp_typesupport_target}
-)
-
-add_executable(
-  fake
-  src/fake.cpp
-)
-
-ament_target_dependencies(
-  fake
-  "rclcpp"
-  "std_msgs"
-  "filters_base"
-  "filters_kf_core"
-  "Eigen3"
-)
-
-target_link_libraries(
-  fake
+  sensor
   ${cpp_typesupport_target}
 )
 
 install(
-  TARGETS node fake
+  TARGETS sensor
   DESTINATION lib/${PROJECT_NAME}
 )
 

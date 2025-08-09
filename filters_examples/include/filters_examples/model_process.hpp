@@ -1,10 +1,10 @@
-#ifndef _FILTERS_KF_EXAMPLE_MODEL_PROCESS_HPP
-#define _FILTERS_KF_EXAMPLE_MODEL_PROCESS_HPP
+#ifndef _FILTERS_EXAMPLES_MODEL_PROCESS_HPP
+#define _FILTERS_EXAMPLES_MODEL_PROCESS_HPP
 
 #include "filters_base/model_process.hpp"
 #include "filters_base/types.hpp"
 
-namespace filters_kf_example
+namespace filters_examples
 {
 
 struct ProcessT : public filters_base::TypesProcess<2, 1, 2>
@@ -57,4 +57,4 @@ public:
 
 } // end namespace filters_kf_core
 
-#endif // _FILTERS_KF_EXAMPLE_MODEL_PROCESS_HPP
+#endif // _FILTERS_EXAMPLES_MODEL_PROCESS_HPP

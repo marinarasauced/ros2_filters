@@ -1,5 +1,5 @@
-#ifndef _FILTERS_KF_EXAMPLE_MODEL_MEASUREMENT_HPP
-#define _FILTERS_KF_EXAMPLE_MODEL_MEASUREMENT_HPP
+#ifndef FILTERS_EXAMPLES_MODEL_MEASUREMENT_HPP
+#define FILTERS_EXAMPLES_MODEL_MEASUREMENT_HPP
 
 #include "filters_base/model_measurement.hpp"
 #include "filters_base/types.hpp"
@@ -39,4 +39,4 @@ public:
 
 } // end namespace filters_kf_core
 
-#endif // _FILTERS_KF_EXAMPLE_MODEL_MEASUREMENT_HPP
+#endif // FILTERS_EXAMPLES_MODEL_MEASUREMENT_HPP
