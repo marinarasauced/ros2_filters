@@ -1,12 +1,12 @@
 
-#include "filters_examples/filter_kf.hpp"
+#include "filters_examples/filter_ekf.hpp"
 
 namespace filters_examples
 {
 
-NodeFilterKF::NodeFilterKF(
+NodeFilterEKF::NodeFilterEKF(
 ) :
-    Node("filters_examples_kf")
+    Node("filters_examples_ekf")
 {
     rclcpp::Time now = this->now();
 
@@ -30,7 +30,7 @@ NodeFilterKF::NodeFilterKF(
     filter_->addModelMeasurement<MeasurementT>(model_measurement_);
 
     publisher_x_ = this->create_publisher<filters_examples::msg::State>(
-        "filters/example/kf/x",
+        "filters/example/ekf/x",
         10
     );
 
@@ -38,7 +38,7 @@ NodeFilterKF::NodeFilterKF(
         "filters/example/sensor/z",
         10,
         std::bind(
-            &NodeFilterKF::handle_subscription_z_,
+            &NodeFilterEKF::handle_subscription_z_,
             this,
             std::placeholders::_1
         )
@@ -47,14 +47,14 @@ NodeFilterKF::NodeFilterKF(
     timer_ = this->create_wall_timer(
         std::chrono::milliseconds(100),
         std::bind(
-            &NodeFilterKF::handle_timer_,
+            &NodeFilterEKF::handle_timer_,
             this
         )
     );
 }
 
 
-void NodeFilterKF::handle_publisher_x_(
+void NodeFilterEKF::handle_publisher_x_(
 ) {
     auto state = filter_->state();
 
@@ -66,7 +66,7 @@ void NodeFilterKF::handle_publisher_x_(
 }
 
 
-void NodeFilterKF::handle_subscription_z_(
+void NodeFilterEKF::handle_subscription_z_(
     const filters_examples::msg::Measurement::SharedPtr msg
 ) {
     auto measurement = std::make_shared<filters_base::Measurement<filters_examples::msg::Measurement>>(
@@ -83,7 +83,7 @@ void NodeFilterKF::handle_subscription_z_(
 }
 
 
-void NodeFilterKF::handle_timer_(
+void NodeFilterEKF::handle_timer_(
 ) {
     filter_->deQueue(model_process_, this->now());
     handle_publisher_x_();
@@ -96,7 +96,7 @@ void NodeFilterKF::handle_timer_(
 int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
-    auto node = std::make_shared<filters_examples::NodeFilterKF>();
+    auto node = std::make_shared<filters_examples::NodeFilterEKF>();
     rclcpp::spin(node);
     rclcpp::shutdown();
     return 0;

@@ -28,24 +28,24 @@ public:
         return dx;
     }
 
-    MatrixXX A(const VectorX& x, double t, double dt) const override
+    MatrixXX F(const VectorX& x, double t, double dt) const override
     {
-        MatrixXX A;
-        A(0, 0) = 1.0;
-        A(0, 1) = dt;
-        A(1, 0) = 0.0;
-        A(1, 1) = 1.0;
-        return A;
+        MatrixXX F;
+        F(0, 0) = 1.0;
+        F(0, 1) = dt;
+        F(1, 0) = 0.0;
+        F(1, 1) = 1.0;
+        return F;
     }
 
-    MatrixXX G(const VectorW& w, double t, double dt) const override
+    MatrixXX W(const VectorW& w, double t, double dt) const override
     {
-        MatrixXX G;
-        G(0, 0) = 1.0;
-        G(0, 1) = 0.0;
-        G(1, 0) = 0.0;
-        G(1, 1) = 1.0;
-        return G;
+        MatrixXX W;
+        W(0, 0) = 1.0;
+        W(0, 1) = 0.0;
+        W(1, 0) = 0.0;
+        W(1, 1) = 1.0;
+        return W;
     }
 
     MatrixWW Q(double t, double dt) const override

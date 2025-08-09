@@ -6,7 +6,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 
-#include "filters_core_kf/core.hpp"
+#include "filters_core_ekf/core.hpp"
 #include "filters_examples/msg/measurement.hpp"
 #include "filters_examples/msg/state.hpp"
 

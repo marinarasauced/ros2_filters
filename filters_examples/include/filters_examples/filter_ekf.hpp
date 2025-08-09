@@ -1,11 +1,11 @@
-#ifndef _FILTERS_EXAMPLES_KF_NODE_HPP
-#define _FILTERS_EXAMPLES_KF_NODE_HPP
+#ifndef _FILTERS_EXAMPLES_EKF_NODE_HPP
+#define _FILTERS_EXAMPLES_EKF_NODE_HPP
 
 #include <random>
 
 #include <rclcpp/rclcpp.hpp>
 
-#include "filters_core_kf/core.hpp"
+#include "filters_core_ekf/core.hpp"
 #include "filters_examples/model_measurement.hpp"
 #include "filters_examples/model_process.hpp"
 #include "filters_examples/msg/state.hpp"
@@ -14,12 +14,12 @@
 namespace filters_examples
 {
 
-class NodeFilterKF : public rclcpp::Node
+class NodeFilterEKF : public rclcpp::Node
 {
 public:
-    using FilterT = filters_core_kf::FilterCore<ProcessT>;
+    using FilterT = filters_core_ekf::FilterCore<ProcessT>;
 
-    NodeFilterKF();
+    NodeFilterEKF();
 
 private:
     rclcpp::Publisher<filters_examples::msg::State>::SharedPtr publisher_x_;
@@ -40,4 +40,4 @@ private:
 
 } // end namespace filters_examples
 
-#endif // _FILTERS_EXAMPLES_KF_NODE_HPP
+#endif // _FILTERS_EXAMPLES_EKF_NODE_HPP

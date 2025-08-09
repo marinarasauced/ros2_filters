@@ -9,7 +9,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(filters_base REQUIRED)
-find_package(filters_core_kf REQUIRED)
+find_package(filters_core_ekf REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
@@ -42,7 +42,7 @@ ament_target_dependencies(
   "rclcpp"
   "std_msgs"
   "filters_base"
-  "filters_core_kf"
+  "filters_core_ekf"
   "Eigen3"
 )
 
@@ -52,26 +52,26 @@ target_link_libraries(
 )
 
 add_executable(
-  filter_kf
-  src/filter_kf.cpp
+  filter_ekf
+  src/filter_ekf.cpp
 )
 
 ament_target_dependencies(
-  filter_kf
+  filter_ekf
   "rclcpp"
   "std_msgs"
   "filters_base"
-  "filters_core_kf"
+  "filters_core_ekf"
   "Eigen3"
 )
 
 target_link_libraries(
-  filter_kf
+  filter_ekf
   ${cpp_typesupport_target}
 )
 
 install(
-  TARGETS sensor filter_kf
+  TARGETS sensor filter_ekf
   DESTINATION lib/${PROJECT_NAME}
 )
 
